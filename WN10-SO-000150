@@ -1,0 +1,38 @@
+<#
+.SYNOPSIS
+    This PowerShell script ensures that Anonymous enumeration of shares must be restricted to Value: 1.
+
+.NOTES
+    Author          : Ryan Taylor
+    LinkedIn        : https://www.linkedin.com/in/ryan--taylor/
+    GitHub          : https://github.com/keithjr2500
+    Date Created    : 2025-16-06
+    Last Modified   : 2025-16-06
+    Version         : 1.0
+    CVEs            : N/A
+    Plugin IDs      : N/A
+    STIG-ID         : WN10-SO-000150
+
+.TESTED ON
+    Date(s) Tested  : 
+    Tested By       : 
+    Systems Tested  : 
+    PowerShell Ver. : 
+
+.USAGE
+    Put any usage instructions here.
+    Example syntax:
+    PS C:\> .\__remediation_template(STIG-ID-WN10-SO-000150).ps1 
+#>
+
+# YOUR CODE GOES HERE# Set the registry path
+$regPath = "HKLM:\SYSTEM\CurrentControlSet\Control\Lsa"
+
+# Set the value name and data
+$valueName = "RestrictAnonymous"
+$valueData = 1
+
+# Create or update the registry value
+New-ItemProperty -Path $regPath -Name $valueName -Value $valueData -PropertyType DWord -Force
+
+Write-Output "RestrictAnonymous set to 1 successfully."
