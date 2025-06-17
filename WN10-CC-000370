@@ -1,0 +1,47 @@
+<#
+.SYNOPSIS
+    This PowerShell script ensures that the convenience PIN for Windows 10 must be disabled.
+
+.NOTES
+    Author          : Ryan Taylor
+    LinkedIn        : https://www.linkedin.com/in/ryan--taylor/
+    GitHub          : github.com/keithjr2500
+    Date Created    : 2025-17-06
+    Last Modified   : 2025-17-06
+    Version         : 1.0
+    CVEs            : N/A
+    Plugin IDs      : N/A
+    STIG-ID         : WN10-CC-000370
+
+.TESTED ON
+    Date(s) Tested  : 
+    Tested By       : 
+    Systems Tested  : 
+    PowerShell Ver. : 
+
+.USAGE
+    Put any usage instructions here.
+    Example syntax:
+    PS C:\> .\__remediation_template(STIG-ID-WN10-CC-000370).ps1 
+#>
+
+# YOUR CODE GOES HERE# Define registry path and value settings
+$registryPath = "HKLM:\Software\Policies\Microsoft\Windows\System"
+$valueName = "AllowDomainPINLogon"
+$desiredValue = 0
+
+# Create the registry key if it does not exist
+if (-not (Test-Path $registryPath)) {
+    New-Item -Path $registryPath -Force | Out-Null
+}
+
+# Get current value if it exists
+$currentValue = Get-ItemProperty -Path $registryPath -Name $valueName -ErrorAction SilentlyContinue
+
+# Set the value if it does not exist or is not correct
+if ($null -eq $currentValue -or $currentValue.$valueName -ne $desiredValue) {
+    Set-ItemProperty -Path $registryPath -Name $valueName -Value $desiredValue -Type DWord
+    Write-Output "Registry value '$valueName' has been set to $desiredValue."
+} else {
+    Write-Output "Registry value '$valueName' is already correctly set to $desiredValue."
+}
