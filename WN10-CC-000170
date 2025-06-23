@@ -1,0 +1,45 @@
+<#
+.SYNOPSIS
+    This PowerShell script ensures that the setting to allow Microsoft accounts to be optional for modern style apps must be enabled.
+
+.NOTES
+    Author          : Ryan Taylor
+    LinkedIn        : https://www.linkedin.com/in/ryan--taylor/
+    GitHub          : https://github.com/keithjr2500
+    Date Created    : 2025-23-06
+    Last Modified   : 2025-23-06
+    Version         : 1.0
+    CVEs            : N/A
+    Plugin IDs      : N/A
+    STIG-ID         : WN10-CC-000170
+
+.TESTED ON
+    Date(s) Tested  : 
+    Tested By       : 
+    Systems Tested  : 
+    PowerShell Ver. : 
+
+.USAGE
+    Put any usage instructions here.
+    Example syntax:
+    PS C:\> .\__remediation_template(STIG-ID-WN10-CC-000170).ps1 
+#># Define registry path and target value
+$registryPath = "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Policies\System"
+$valueName = "MSAOptional"
+$desiredValue = 1
+
+# Create the registry key if it does not exist
+if (-not (Test-Path $registryPath)) {
+    New-Item -Path $registryPath -Force | Out-Null
+}
+
+# Retrieve current value, if it exists
+$currentValue = Get-ItemProperty -Path $registryPath -Name $valueName -ErrorAction SilentlyContinue
+
+# Check and update the registry value if needed
+if ($null -eq $currentValue -or $currentValue.$valueName -ne $desiredValue) {
+    Set-ItemProperty -Path $registryPath -Name $valueName -Value $desiredValue -Type DWord
+    Write-Output "Registry value '$valueName' set to $desiredValue."
+} else {
+    Write-Output "Registry value '$valueName' is already set correctly to $desiredValue."
+}
