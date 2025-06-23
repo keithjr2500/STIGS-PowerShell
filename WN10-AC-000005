@@ -1,0 +1,42 @@
+<#
+.SYNOPSIS
+    This PowerShell script ensures that Windows 10 account lockout duration must be configured to 15 minutes or greater.
+
+.NOTES
+    Author          : Ryan Taylor
+    LinkedIn        : https://www.linkedin.com/in/ryan--taylor/
+    GitHub          : https://github.com/keithjr2500
+    Date Created    : 2025-23-096
+    Last Modified   : 20245-23-06
+    Version         : 1.0
+    CVEs            : N/A
+    Plugin IDs      : N/A
+    STIG-ID         : WN10-AC-000005
+
+.TESTED ON
+    Date(s) Tested  : 
+    Tested By       : 
+    Systems Tested  : 
+    PowerShell Ver. : 
+
+.USAGE
+    Put any usage instructions here.
+    Example syntax:
+    PS C:\> .\__remediation_template(STIG-ID-WN10-AC-000005).ps1 
+#>
+# Get Account Lockout Duration using net accounts
+$lockoutDuration = (net accounts | Where-Object { $_ -match "Lockout duration" }) -replace '.*:\s+', ''
+
+# Convert to integer
+[int]$lockoutDurationMinutes = $lockoutDuration
+
+# Evaluate and display result
+if ($lockoutDurationMinutes -eq 0) {
+    Write-Output "Account lockout duration is set to 0 (manual admin unlock). This is NOT a finding."
+}
+elseif ($lockoutDurationMinutes -lt 15) {
+    Write-Output "Account lockout duration is $lockoutDurationMinutes minutes, which is less than 15. THIS IS A FINDING."
+}
+else {
+    Write-Output "Account lockout duration is $lockoutDurationMinutes minutes. This is NOT a finding."
+}
